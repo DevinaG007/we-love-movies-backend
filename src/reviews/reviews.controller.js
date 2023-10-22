@@ -16,6 +16,17 @@ async function destroy(req, res, next){
     res.sendStatus(204)
 }
 
+async function update(req, res, next){
+    const updatedReview = {
+        ...res.locals.review,
+        ...req.body.data,
+        review_id: res.locals.review.review_id
+    }
+    const data = await service.update(updatedReview);
+    res.json({data})
+}
+
 module.exports = {
+    update: [reviewExists, update],
     delete: [reviewExists, destroy]
 }

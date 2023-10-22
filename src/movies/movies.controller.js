@@ -28,7 +28,21 @@ async function read(req, res){
     res.json({data: await service.read(movieId)})
 }
 
+async function readWithTheaters(req, res){
+    const movie = res.locals.movie;
+    const data = await service.readWithTheaters(movie.movie_id);
+    res.json({data})
+}
+
+async function listMoviesReviews(req, res){
+    const movie = res.locals.movie;
+    const data = await service.listMoviesReviews(movie.movie_id);
+    res.json({data})
+}
+
 module.exports = {
     list: [listAllShowing, list],
-    read: [movieExists, read]
+    read: [movieExists, read],
+    readWithTheaters: [movieExists, readWithTheaters],
+    listMoviesReviews: [movieExists, listMoviesReviews]
 }
