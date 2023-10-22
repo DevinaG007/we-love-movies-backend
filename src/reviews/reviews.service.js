@@ -15,24 +15,31 @@ function read(review_id){
 }
 
 const addCritic = mapProperties({
-    critic_id: "critic.critic_id",
+    critics_id: "critic.critic_id",
     preferred_name: "critic.preferred_name",
     surname: "critic.surname",
     organization_name: "critic.organization_name",
-    created_at: "critic.created_at",
-    updated_at: "critic.updated_at"
+    critic_created: "critic.created_at",
+    critic_updated: "critic.updated_at"
 })
 
-async function update(updatedReview){
-    return knex("reviews")
+async function update(updateReview){
+     const updated = await knex("reviews")
     .select("*")
-    .where({"review_id": updatedReview.review_id})
-    .update(updatedReview, "*")
-    .then((updatedRecords) => updatedRecords[0])
+    .where({review_id: updateReview.review_id})
+    .update(updateReview, "*");
+
+   
+    return knex("reviews as r")
+    .join("critics as c", "r.critic_id", "c.critic_id")
+    .select("r.*", "c.*", "c.updated_at as critic_updated", "c.created_at as critic_created", "c.critic_id as critics_id")
+    .where({review_id: updateReview.review_id})
+    .first()
+    .then(addCritic)
 }
 
 module.exports = {
+    update,
     read,
-    destroy,
-    update
+    destroy
 }
